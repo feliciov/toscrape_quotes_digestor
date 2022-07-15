@@ -1,12 +1,24 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/items.html
-
 import scrapy
+from itemloaders.processors import TakeFirst, MapCompose
+from w3lib.html import remove_tags
+
+
+def split_on_comma(value: str):
+    return value.split(",")
 
 
 class QuotesItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    quotation = scrapy.Field(
+        input_processor=MapCompose(remove_tags),
+        output_processor=TakeFirst(),
+    )
+    author = scrapy.Field(
+        input_processor=MapCompose(remove_tags),
+        output_processor=TakeFirst(),
+    )
+    author_link = scrapy.Field(
+        output_processor=TakeFirst(),
+    )
+    keywords = scrapy.Field(
+        input_processor=MapCompose(split_on_comma),
+    )
