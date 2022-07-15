@@ -14,3 +14,9 @@ class QuotestoscrapeSpider(scrapy.Spider):
                 "author_link":quote.css("small.author+a[href]").get(),
                 "keywords":quote.css("div.tags").css("a::text").getall(),
             }
+        if (next_url:= response.css("ul.pager li.next a::attr('href')").get()):
+            yield scrapy.Request(
+                response.urljoin(next_url),
+                callback=self.parse,
+            )
+            
